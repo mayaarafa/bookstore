@@ -4,43 +4,52 @@
 @inject IDbContextFactory<Bookstore.Data.BookstoreDb> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
+<PageTitle>Bookstore - Details - @(book != null ? book.Title : "Loading...")</PageTitle>
 
-<h1>Details</h1>
+<h1>@(book != null ? book.Title : "Loading...")</h1>
+<hr />
 
-<div>
-    <h2>Book</h2>
-    <hr />
-    @if (book is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">Title</dt>
-            <dd class="col-sm-10">@book.Title</dd>
-            <dt class="col-sm-2">CoverImageUrl</dt>
-            <dd class="col-sm-10">@book.CoverImageUrl</dd>
-            <dt class="col-sm-2">Author</dt>
-            <dd class="col-sm-10">@book.Author</dd>
-            <dt class="col-sm-2">Genre</dt>
-            <dd class="col-sm-10">@book.Genre</dd>
-            <dt class="col-sm-2">Publisher</dt>
-            <dd class="col-sm-10">@book.Publisher</dd>
-            <dt class="col-sm-2">PublicationYear</dt>
-            <dd class="col-sm-10">@book.PublicationYear</dd>
-            <dt class="col-sm-2">Language</dt>
-            <dd class="col-sm-10">@book.Language</dd>
-            <dt class="col-sm-2">PageCount</dt>
-            <dd class="col-sm-10">@book.PageCount</dd>
-            <dt class="col-sm-2">Price</dt>
-            <dd class="col-sm-10">@book.Price</dd>
-        </dl>
-        <div>
-            <a href="@($"/books/edit?id={book.Id}")">Edit</a> |
-            <a href="@($"/")">Back to List</a>
-        </div>
-    }
+<div class="row">
+    <div class="col-md-8">
+        @if(book is null) {
+            <p>Loading...</p>
+        }
+        else {
+        
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="@book.CoverImageUrl" alt="@book.Title" class="img-fluid w-100 object-fit-cover" />
+                </div>
+                <div class="col-sm-8 position-relative">
+                    <dl class="row">
+                        <dt class="col-sm-4">Title</dt>
+                        <dd class="col-sm-8">@book.Title</dd>
+                        <dt class="col-sm-4">Author</dt>
+                        <dd class="col-sm-8">@book.Author</dd>
+                        <dt class="col-sm-4">Genre</dt>
+                        <dd class="col-sm-8">@book.Genre</dd>
+                        <dt class="col-sm-4">Publisher</dt>
+                        <dd class="col-sm-8">@book.Publisher</dd>
+                        <dt class="col-sm-4">PublicationYear</dt>
+                        <dd class="col-sm-8">@book.PublicationYear</dd>
+                        <dt class="col-sm-4">Language</dt>
+                        <dd class="col-sm-8">@book.Language</dd>
+                        <dt class="col-sm-4">PageCount</dt>
+                        <dd class="col-sm-8">@book.PageCount</dd>
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">@book.Price</dd>
+                    </dl>
+                    <div>
+                        <a href="@($"/books/edit?id={book.Id}")">Edit</a> |
+                        <a href="@($"/")">Back to List</a>
+                    </div>
+                    <div class="position-absolute bottom-0">
+                        <button class="btn btn-warning">Purchase</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
 
 @code {
