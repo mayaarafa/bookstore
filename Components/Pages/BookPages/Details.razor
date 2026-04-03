@@ -3,6 +3,8 @@
 @using Bookstore.Models
 @inject IDbContextFactory<Bookstore.Data.BookstoreDb> DbFactory
 @inject NavigationManager NavigationManager
+@inject OrderState OrderState
+@rendermode InteractiveServer
 
 <PageTitle>Bookstore - Details - @(book != null ? book.Title : "Loading...")</PageTitle>
 
@@ -44,7 +46,7 @@
                         <a href="@($"/")">Back to List</a>
                     </div>
                     <div class="position-absolute bottom-0">
-                        <button class="btn btn-warning">Purchase</button>
+                        <button class="btn btn-warning" @onclick="() => AddToCart(book)">Add to Cart</button>
                     </div>
                 </div>
             </div>
@@ -67,5 +69,9 @@
         {
             NavigationManager.NotFound();
         }
+    }
+
+    private void AddToCart(Book book) {
+        OrderState.AddToCart(new OrderItem { Book = book, Quantity = 1 });
     }
 }
