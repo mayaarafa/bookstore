@@ -1,0 +1,43 @@
+@page "/myorders"
+@implements IAsyncDisposable
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BookstoreDb> DbFactory
+@rendermode InteractiveServer
+
+<PageTitle>Bookstore - My Orders</PageTitle>
+
+<div>
+    @foreach(Order order in orders) {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h4 class="card-title">@order.OrderDate.ToString("MMMM dd, yyyy")</h4>
+                <div class="row my-3">
+                    @foreach(OrderItem item in order.OrderItems) {
+                        <div class="col-sm-6">
+                            <p class="card-text fw-bold">@item.Book.Title (@item.Quantity):</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="card-text">$@item.GetTotal().ToString("F2")</p>
+                        </div>
+                    }
+                </div>
+                <p class="card-text">Total (@order.OrderItems.Count()): $@order.GetTotal().ToString("F2")</p>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private BookstoreDb context { get; set; }
+    protected override void OnInitialized() {
+        context = DbFactory.CreateDbContext();
+    }
+
+    private IEnumerable<Order> Orders => orders;
+    private IEnumerable<Order> orders => context.Orders
+        .Include(o => o.OrderItems)
+        .ThenInclude(i => i.Book)
+        .AsNoTracking();
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

@@ -19,6 +19,15 @@
                     }
                 }
             </select>
+            <h6 class="mt-4">Sort by:</h6>
+            <select class="form-control" @bind="sortFilter">
+                <option value="">Price</option>
+                @if(sortOrders != null) {
+                    @foreach(string sortOrder in sortOrders) {
+                        <option value="@sortOrder">@sortOrder</option>
+                    }
+                }
+            </select>
         </div>
     </div>
     <div class="col">
@@ -39,8 +48,10 @@
     private BookstoreDb context { get; set; }
     private IEnumerable<Book> books => context.Books.AsNoTracking();
     private string genreFilter = string.Empty;
-    private IEnumerable<Book> filteredBooks => books.Where(b => string.IsNullOrWhiteSpace(genreFilter) || b.Genre == genreFilter);
+    private string sortFilter = string.Empty;
+    private IEnumerable<Book> filteredBooks => books.Where(b => string.IsNullOrWhiteSpace(genreFilter) || b.Genre == genreFilter).OrderBy(b => sortFilter == "Price Ascending" ? b.Price : 0).OrderByDescending(b => sortFilter == "Price Descending" ? b.Price : 0);
     private IEnumerable<string> genres => books.Select(b => b.Genre).Distinct();
+    private IEnumerable<string> sortOrders => new[] { "Price Ascending", "Price Descending" };
     protected override void OnInitialized() {
         context = DbFactory.CreateDbContext();
     }
