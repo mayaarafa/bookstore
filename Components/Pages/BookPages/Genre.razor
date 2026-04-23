@@ -1,0 +1,39 @@
+@page "/genre/{GenreName}"
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<BookstoreDb> DbFactory
+@rendermode InteractiveServer
+
+<PageTitle>Bookstore - Genre: @GenreName</PageTitle>
+
+<h1>Genre: @GenreName</h1>
+
+@if (books is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="hstack flex-wrap gap-3">
+        @foreach (Book book in books)
+        {
+            <BookCard Book="@book" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter] public string GenreName { get; set; } = string.Empty;
+
+    private BookstoreDb context { get; set; } = default!;
+    private IEnumerable<Book>? books;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        books = await context.Books.AsNoTracking()
+            .Where(b => b.Genre == GenreName)
+            .ToListAsync();
+    }
+}
